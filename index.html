@@ -1,0 +1,786 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Delta Bravo</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: manual de campo. Cabecera con marca, portada con ficha técnica 72 h, secciones con rótulos de mono, herramientas en pestañas. */
+:root {
+  --bg: #14170f;
+  --surface: #1c2014;
+  --surface-2: #242a19;
+  --line: #3a4128;
+  --fg: #e8e4d0;
+  --muted: #a3a38a;
+  --accent: #ff6a1a;
+  --accent-fg: #14170f;
+  --olive: #8d9b43;
+  --ok: #9bc24a;
+  --warn: #f0b429;
+  --bad: #ff5a4d;
+  --font-display: "Big Shoulders Display", "Arial Narrow", Impact, sans-serif;
+  --font-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    --bg: #ebe6d2;
+    --surface: #f6f2e2;
+    --surface-2: #e0dbc4;
+    --line: #b9b394;
+    --fg: #1d2113;
+    --muted: #5d5f48;
+    --accent: #c94a00;
+    --accent-fg: #fff7ea;
+    --olive: #5c6a1f;
+    --ok: #3f6b10;
+    --warn: #8a5a00;
+    --bad: #b3261e;
+    color-scheme: light;
+  }
+}
+:root[data-theme="light"] {
+  --bg: #ebe6d2;
+  --surface: #f6f2e2;
+  --surface-2: #e0dbc4;
+  --line: #b9b394;
+  --fg: #1d2113;
+  --muted: #5d5f48;
+  --accent: #c94a00;
+  --accent-fg: #fff7ea;
+  --olive: #5c6a1f;
+  --ok: #3f6b10;
+  --warn: #8a5a00;
+  --bad: #b3261e;
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.6;
+  padding-block: 0 48px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.wrap { max-width: 1080px; margin: 0 auto; }
+h1, h2, h3 { font-family: var(--font-display); text-transform: uppercase; letter-spacing: 0.02em; line-height: 1.02; margin: 0; text-wrap: balance; font-weight: 800; }
+h1 { font-size: clamp(2.6rem, 8vw, 5rem); }
+h2 { font-size: clamp(1.9rem, 5vw, 2.8rem); }
+h3 { font-size: 1.35rem; font-weight: 600; letter-spacing: 0.04em; }
+p { margin: 0; }
+a { color: var(--accent); }
+.mono { font-family: var(--font-mono); font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.tag { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase; border: 1px solid var(--line); padding: 2px 8px; color: var(--muted); display: inline-block; }
+.tag.example { border-color: var(--warn); color: var(--warn); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* Cabecera */
+header.top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 24px; padding-block: 18px; border-bottom: 1px solid var(--line); }
+.brand { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--fg); }
+.brand svg { width: 38px; height: 38px; flex: none; }
+.brand b { font-family: var(--font-display); font-size: 1.7rem; letter-spacing: 0.06em; text-transform: uppercase; line-height: 1; }
+.brand small { display: block; font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.12em; color: var(--muted); text-transform: uppercase; }
+nav.main { display: flex; flex-wrap: wrap; gap: 4px 20px; }
+nav.main a { font-family: var(--font-mono); font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--fg); text-decoration: none; padding: 6px 0; border-bottom: 2px solid transparent; }
+nav.main a:hover { border-color: var(--accent); }
+
+/* Portada */
+.hero { display: grid; grid-template-columns: 1.3fr 1fr; gap: 32px; padding-block: 56px 48px; align-items: start; }
+.hero > * { min-width: 0; }
+.hero h1 span { color: var(--accent); }
+.hero p.lead { font-size: 1.1rem; color: var(--muted); max-width: 52ch; margin-top: 20px; }
+.cta-row { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
+.btn { font-family: var(--font-mono); font-size: 0.82rem; letter-spacing: 0.08em; text-transform: uppercase; text-decoration: none; padding: 12px 18px; border: 1px solid var(--accent); background: var(--accent); color: var(--accent-fg); cursor: pointer; display: inline-block; font-weight: 500; }
+.btn.ghost { background: transparent; color: var(--fg); border-color: var(--line); }
+.btn.ghost:hover { border-color: var(--accent); }
+.btn:disabled { opacity: 0.55; cursor: not-allowed; }
+.spec { background: var(--surface); border: 1px solid var(--line); padding: 20px; }
+.spec dl { margin: 14px 0 0; display: grid; grid-template-columns: auto 1fr; gap: 0; }
+.spec dt, .spec dd { margin: 0; padding: 10px 0; border-top: 1px dashed var(--line); }
+.spec dt { font-family: var(--font-mono); font-size: 0.74rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); padding-right: 16px; }
+.spec dd { font-family: var(--font-display); font-size: 1.5rem; font-weight: 600; letter-spacing: 0.03em; text-align: right; font-variant-numeric: tabular-nums; }
+
+/* Secciones */
+section.block { padding-block: 56px 8px; border-top: 1px solid var(--line); }
+.sec-head { display: grid; gap: 10px; margin-bottom: 28px; max-width: 62ch; }
+.sec-head p { color: var(--muted); }
+
+/* Guías */
+.guides { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px; }
+details.guide { background: var(--surface); border: 1px solid var(--line); padding: 0; min-width: 0; }
+details.guide summary { list-style: none; cursor: pointer; padding: 18px; display: grid; gap: 6px; }
+details.guide summary::-webkit-details-marker { display: none; }
+details.guide summary .more { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.08em; color: var(--accent); text-transform: uppercase; }
+details.guide[open] summary .more::after { content: " · cerrar"; }
+details.guide:not([open]) summary .more::after { content: " · abrir"; }
+details.guide ul { margin: 0; padding: 0 18px 18px 36px; color: var(--muted); display: grid; gap: 8px; }
+details.guide ul li { padding-left: 2px; }
+details.guide .rev { padding: 0 18px 16px; }
+
+/* Herramientas */
+.tabs { display: flex; flex-wrap: wrap; gap: 0; border: 1px solid var(--line); background: var(--surface); }
+.tabs button { flex: 1 1 auto; font-family: var(--font-mono); font-size: 0.74rem; letter-spacing: 0.06em; text-transform: uppercase; padding: 12px 14px; background: transparent; color: var(--muted); border: 0; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); cursor: pointer; text-align: left; }
+.tabs button[aria-selected="true"] { background: var(--accent); color: var(--accent-fg); }
+.panel { border: 1px solid var(--line); border-top: 0; background: var(--surface); padding: 24px; }
+.panel[hidden] { display: none; }
+.panel h3 { margin-bottom: 6px; }
+.panel .intro { color: var(--muted); max-width: 62ch; margin-bottom: 20px; }
+.form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 14px; margin-bottom: 20px; }
+label.f { display: grid; gap: 6px; font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); min-width: 0; }
+input[type="number"], input[type="text"], input[type="date"], select { font: inherit; font-family: var(--font-body); font-size: 1rem; letter-spacing: 0; text-transform: none; color: var(--fg); background: var(--bg); border: 1px solid var(--line); padding: 10px 12px; width: 100%; min-width: 0; border-radius: 0; }
+input:focus-visible, select:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.results { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; }
+.res { background: var(--bg); border: 1px solid var(--line); padding: 14px; }
+.res b { display: block; font-family: var(--font-display); font-size: 2.4rem; font-weight: 800; line-height: 1; color: var(--accent); font-variant-numeric: tabular-nums; margin-top: 6px; }
+.res span { font-size: 0.85rem; color: var(--muted); }
+.note { margin-top: 16px; font-size: 0.85rem; color: var(--muted); max-width: 70ch; }
+.scroll-x { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; min-width: 520px; }
+th, td { text-align: left; padding: 8px 10px 8px 0; border-bottom: 1px dashed var(--line); font-size: 0.92rem; vertical-align: middle; }
+th { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-weight: 400; }
+td input { width: 84px; padding: 6px 8px; }
+.check-groups { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; margin-top: 18px; }
+.check-groups > div { min-width: 0; }
+.check-groups h4 { font-family: var(--font-mono); font-size: 0.74rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin: 0 0 8px; font-weight: 500; }
+.chk { display: flex; gap: 10px; align-items: flex-start; padding: 6px 0; border-bottom: 1px dashed var(--line); cursor: pointer; font-size: 0.95rem; }
+.chk input { margin-top: 5px; accent-color: var(--accent); width: 16px; height: 16px; flex: none; }
+.chk input:checked + span { color: var(--muted); text-decoration: line-through; }
+.flags { display: flex; flex-wrap: wrap; gap: 8px 18px; margin-bottom: 8px; }
+.flags label { display: flex; gap: 8px; align-items: center; font-size: 0.92rem; cursor: pointer; }
+.flags input { accent-color: var(--accent); width: 16px; height: 16px; }
+.bar { height: 8px; background: var(--bg); border: 1px solid var(--line); margin: 12px 0 4px; }
+.bar i { display: block; height: 100%; background: var(--accent); width: 0; }
+.quiz-q { display: grid; grid-template-columns: 1fr auto; gap: 10px 16px; align-items: center; padding: 10px 0; border-bottom: 1px dashed var(--line); }
+.quiz-q > span { min-width: 0; }
+.yn { display: flex; }
+.yn button { font-family: var(--font-mono); font-size: 0.74rem; text-transform: uppercase; padding: 8px 14px; border: 1px solid var(--line); background: var(--bg); color: var(--muted); cursor: pointer; }
+.yn button + button { border-left: 0; }
+.yn button[aria-pressed="true"] { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
+.score { display: flex; flex-wrap: wrap; gap: 8px 24px; align-items: baseline; margin-top: 20px; }
+.score b { font-family: var(--font-display); font-size: 3.4rem; color: var(--accent); line-height: 1; }
+ul.plain, ol.steps { margin: 12px 0 0; padding-left: 22px; display: grid; gap: 8px; }
+ol.steps li { padding-left: 4px; }
+.exp-row { display: grid; grid-template-columns: 1fr auto auto; gap: 8px 14px; align-items: center; padding: 10px 0; border-bottom: 1px dashed var(--line); }
+.exp-row > * { min-width: 0; }
+.badge { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.06em; text-transform: uppercase; padding: 3px 8px; border: 1px solid currentColor; white-space: nowrap; }
+.badge.ok { color: var(--ok); }
+.badge.warn { color: var(--warn); }
+.badge.bad { color: var(--bad); }
+.link-btn { background: none; border: 0; color: var(--muted); cursor: pointer; font-family: var(--font-mono); font-size: 0.72rem; text-transform: uppercase; padding: 4px; }
+.link-btn:hover { color: var(--bad); }
+.add-row { display: grid; grid-template-columns: 1fr 180px auto; gap: 10px; margin-bottom: 14px; align-items: end; }
+.add-row > * { min-width: 0; }
+.alerts { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; }
+.alerts button { font-family: var(--font-mono); font-size: 0.74rem; letter-spacing: 0.06em; text-transform: uppercase; padding: 10px 14px; background: var(--bg); color: var(--fg); border: 1px solid var(--line); cursor: pointer; }
+.alerts button[aria-pressed="true"] { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
+.call { border-left: 4px solid var(--bad); background: var(--bg); padding: 12px 16px; margin-top: 18px; font-size: 0.92rem; }
+
+/* Recomendaciones y tienda */
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
+.card { background: var(--surface); border: 1px solid var(--line); padding: 18px; display: grid; gap: 10px; align-content: start; min-width: 0; }
+.card ul { margin: 0; padding-left: 18px; color: var(--muted); font-size: 0.92rem; display: grid; gap: 4px; }
+.card .row { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px; }
+.disclosure { border: 1px dashed var(--accent); padding: 14px 16px; margin-bottom: 22px; font-size: 0.92rem; max-width: 76ch; }
+.sub { margin: 36px 0 14px; display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: baseline; }
+.sub h3 { font-size: 1.6rem; }
+.two { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
+.two > * { min-width: 0; display: grid; gap: 12px; align-content: start; }
+.two p { color: var(--muted); }
+footer { margin-top: 64px; padding-top: 24px; border-top: 1px solid var(--line); color: var(--muted); font-size: 0.85rem; display: grid; gap: 10px; max-width: 80ch; }
+
+@media (max-width: 760px) {
+  .hero, .two { grid-template-columns: 1fr; }
+  .hero { padding-block: 36px 32px; }
+  .panel { padding: 18px 16px; }
+  .add-row { grid-template-columns: 1fr; }
+  .exp-row { grid-template-columns: 1fr auto; }
+  .exp-row .badge { justify-self: start; }
+}
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <a class="brand" href="#inicio" aria-label="Delta Bravo, inicio">
+      <svg viewBox="0 0 40 40" aria-hidden="true"><path d="M20 3 38 35H2Z" fill="none" stroke="var(--accent)" stroke-width="3" stroke-linejoin="round"/><path d="M20 15 28 31H12Z" fill="var(--accent)"/></svg>
+      <span><b>Delta Bravo</b><small>Preparación y autosuficiencia</small></span>
+    </a>
+    <nav class="main" aria-label="Principal">
+      <a href="#guias">Guías</a>
+      <a href="#herramientas">Herramientas</a>
+      <a href="#recomendaciones">Recomendaciones</a>
+      <a href="#tienda">Tienda</a>
+      <a href="#proyecto">Proyecto</a>
+    </nav>
+  </header>
+
+  <main id="inicio">
+    <div class="hero">
+      <div>
+        <p class="mono">Manual de campo · España</p>
+        <h1 style="margin-top:14px">Preparado antes de que <span>haga falta</span></h1>
+        <p class="lead">Guías claras, herramientas que funcionan en tu navegador sin pedirte datos y equipo probado para apagones, temporales, inundaciones e incendios. Sin alarmismo, con lista de comprobación.</p>
+        <div class="cta-row">
+          <a class="btn" href="#herramientas">Calcular mi kit</a>
+          <a class="btn ghost" href="#guias">Leer las guías</a>
+        </div>
+      </div>
+      <aside class="spec" aria-label="Ficha técnica de referencia">
+        <p class="mono">Ficha de referencia · 1 persona</p>
+        <dl>
+          <dt>Autonomía base</dt><dd>72 h</dd>
+          <dt>Agua</dt><dd>3 L / día</dd>
+          <dt>Comida</dt><dd>2.000 kcal / día</dd>
+          <dt>Emergencias</dt><dd>112</dd>
+          <dt>Radio de reserva</dt><dd>2 juegos de pilas</dd>
+        </dl>
+      </aside>
+    </div>
+
+    <section class="block" id="guias">
+      <div class="sec-head">
+        <p class="mono">Guías</p>
+        <h2>Lo básico, bien hecho</h2>
+        <p>Cada guía resume lo esencial. Las versiones completas llegarán con su checklist descargable.</p>
+      </div>
+      <div class="guides">
+        <details class="guide">
+          <summary><span class="mono">Kit</span><h3>Mochila de 72 horas</h3><span class="more">Resumen</span></summary>
+          <ul>
+            <li>Una mochila por persona, en un lugar de fácil acceso, no en el trastero del fondo.</li>
+            <li>Agua, comida que no necesite cocinar, linterna frontal, radio, batería externa y botiquín.</li>
+            <li>Copias de documentos, efectivo en billetes pequeños y una lista de teléfonos en papel.</li>
+            <li>Revisa el contenido dos veces al año y sustituye lo que caduque.</li>
+          </ul>
+          <p class="rev mono">Revisada oct 2026</p>
+        </details>
+        <details class="guide">
+          <summary><span class="mono">Agua</span><h3>Agua y comida</h3><span class="more">Resumen</span></summary>
+          <ul>
+            <li>Cuenta 3 litros por persona y día entre beber, cocinar e higiene mínima.</li>
+            <li>Guarda agua en envases opacos y rota las reservas cada 6 meses.</li>
+            <li>Filtros y pastillas potabilizadoras sirven para agua dudosa, pero no para sustancias químicas.</li>
+            <li>Despensa de rotación: compra un poco más de lo que consumes y gasta lo más antiguo primero.</li>
+          </ul>
+          <p class="rev mono">Revisada oct 2026</p>
+        </details>
+        <details class="guide">
+          <summary><span class="mono">Energía</span><h3>Luz y energía</h3><span class="more">Resumen</span></summary>
+          <ul>
+            <li>Linternas LED y frontales antes que velas, que provocan incendios en apagones.</li>
+            <li>Una batería externa cargada cubre móviles y router pequeño durante horas.</li>
+            <li>Nunca uses generadores, hornillos de gas ni barbacoas dentro de casa: producen monóxido de carbono.</li>
+            <li>Calcula tu consumo real con la calculadora de autonomía de esta web.</li>
+          </ul>
+          <p class="rev mono">Revisada oct 2026</p>
+        </details>
+        <details class="guide">
+          <summary><span class="mono">Radio</span><h3>Comunicaciones sin red</h3><span class="more">Resumen</span></summary>
+          <ul>
+            <li>Una radio a pilas o de manivela con FM te informa cuando falla internet y la cobertura móvil.</li>
+            <li>Los walkies PMR446 no requieren licencia y sirven para el barrio o el grupo familiar.</li>
+            <li>Acuerda un punto de encuentro y un contacto fuera de la zona afectada.</li>
+            <li>Sigue siempre los avisos oficiales de Protección Civil y de la Agencia Estatal de Meteorología.</li>
+          </ul>
+          <p class="rev mono">Revisada oct 2026</p>
+        </details>
+        <details class="guide">
+          <summary><span class="mono">Salud</span><h3>Primeros auxilios</h3><span class="more">Resumen</span></summary>
+          <ul>
+            <li>Botiquín con apósitos, gasas, venda, esparadrapo, antiséptico, tijeras, guantes y manta térmica.</li>
+            <li>Medicación personal para al menos una semana y copia de la receta.</li>
+            <li>Un curso presencial de primeros auxilios vale más que cualquier guía escrita.</li>
+            <li>En una emergencia real, llama al 112 antes de improvisar.</li>
+          </ul>
+          <p class="rev mono">Revisada oct 2026</p>
+        </details>
+        <details class="guide">
+          <summary><span class="mono">Privacidad</span><h3>Documentos y copias</h3><span class="more">Resumen</span></summary>
+          <ul>
+            <li>Guarda los originales en una caja ignífuga y copias en una funda estanca dentro de la mochila.</li>
+            <li>Una copia cifrada en un USB, además de la de papel, evita depender de la nube.</li>
+            <li>Incluye DNI, seguro, contratos, escrituras, tarjetas sanitarias y fotos de tu familia y mascotas.</li>
+            <li>Anota teléfonos clave en papel: el móvil puede quedarse sin batería.</li>
+          </ul>
+          <p class="rev mono">Revisada oct 2026</p>
+        </details>
+      </div>
+    </section>
+
+    <section class="block" id="herramientas" style="margin-top:56px">
+      <div class="sec-head">
+        <p class="mono">Herramientas</p>
+        <h2>Seis utilidades, cero cuentas</h2>
+        <p>Todo se calcula en tu dispositivo. No se envía ni se guarda nada en un servidor. Las listas y fechas se quedan solo en este navegador.</p>
+      </div>
+
+      <div class="tabs" role="tablist" aria-label="Herramientas">
+        <button role="tab" id="t-agua" aria-selected="true" aria-controls="p-agua">Agua y comida</button>
+        <button role="tab" id="t-mochila" aria-selected="false" aria-controls="p-mochila">Mi mochila</button>
+        <button role="tab" id="t-energia" aria-selected="false" aria-controls="p-energia">Autonomía</button>
+        <button role="tab" id="t-test" aria-selected="false" aria-controls="p-test">Test</button>
+        <button role="tab" id="t-cad" aria-selected="false" aria-controls="p-cad">Caducidades</button>
+        <button role="tab" id="t-ahora" aria-selected="false" aria-controls="p-ahora">Qué hago ahora</button>
+      </div>
+
+      <!-- Agua y comida -->
+      <div class="panel" role="tabpanel" id="p-agua" aria-labelledby="t-agua">
+        <h3>Calculadora de agua y comida</h3>
+        <p class="intro">Cuánto necesita tu hogar para el tiempo que quieras cubrir.</p>
+        <div class="form-grid">
+          <label class="f" for="w-people">Personas<input type="number" id="w-people" min="1" max="20" value="2"></label>
+          <label class="f" for="w-days">Días a cubrir<input type="number" id="w-days" min="1" max="30" value="3"></label>
+          <label class="f" for="w-pets">Mascotas<input type="number" id="w-pets" min="0" max="10" value="1"></label>
+          <label class="f" for="w-climate">Clima<select id="w-climate"><option value="3">Templado</option><option value="4">Calor intenso</option></select></label>
+        </div>
+        <div class="results" aria-live="polite">
+          <div class="res"><span>Agua total</span><b id="w-liters">0</b><span>litros</span></div>
+          <div class="res"><span>Garrafas de 8 L</span><b id="w-jugs">0</b><span>aprox.</span></div>
+          <div class="res"><span>Energía en comida</span><b id="w-kcal">0</b><span>kcal</span></div>
+          <div class="res"><span>Raciones de 500 kcal</span><b id="w-rations">0</b><span>aprox.</span></div>
+        </div>
+        <p class="note">Valores orientativos: 3 litros por persona y día (4 con calor intenso), 1 litro por mascota y día, 2.000 kcal por persona y día. Niños, embarazadas y personas con necesidades médicas pueden requerir más.</p>
+      </div>
+
+      <!-- Mochila -->
+      <div class="panel" role="tabpanel" id="p-mochila" aria-labelledby="t-mochila" hidden>
+        <h3>Generador de mochila</h3>
+        <p class="intro">Marca tu situación y obtén tu lista. Lo que marques como hecho se guarda en este navegador.</p>
+        <div class="flags" id="pack-flags">
+          <label><input type="checkbox" data-flag="kids"> Hay niños</label>
+          <label><input type="checkbox" data-flag="baby"> Hay un bebé</label>
+          <label><input type="checkbox" data-flag="pet"> Hay mascota</label>
+          <label><input type="checkbox" data-flag="meds"> Medicación diaria</label>
+          <label><input type="checkbox" data-flag="car"> Tengo vehículo</label>
+        </div>
+        <div class="bar" aria-hidden="true"><i id="pack-bar"></i></div>
+        <p class="mono" id="pack-count" aria-live="polite">0 de 0</p>
+        <div class="check-groups" id="pack-list"></div>
+      </div>
+
+      <!-- Energía -->
+      <div class="panel" role="tabpanel" id="p-energia" aria-labelledby="t-energia" hidden>
+        <h3>Calculadora de autonomía energética</h3>
+        <p class="intro">Indica qué quieres mantener encendido y cuánta batería tienes. Ajusta unidades y horas.</p>
+        <div class="scroll-x">
+          <table>
+            <thead><tr><th>Aparato</th><th>Vatios</th><th>Unidades</th><th>Horas/día</th><th>Wh/día</th></tr></thead>
+            <tbody id="e-body"></tbody>
+          </table>
+        </div>
+        <div class="form-grid" style="margin-top:20px">
+          <label class="f" for="e-batt">Batería disponible (Wh)<input type="number" id="e-batt" min="0" value="500"></label>
+          <label class="f" for="e-solar">Aporte solar al día (Wh)<input type="number" id="e-solar" min="0" value="0"></label>
+        </div>
+        <div class="results" aria-live="polite">
+          <div class="res"><span>Consumo diario</span><b id="e-demand">0</b><span>Wh</span></div>
+          <div class="res"><span>Energía utilizable</span><b id="e-usable">0</b><span>Wh (85 % de rendimiento)</span></div>
+          <div class="res"><span>Autonomía</span><b id="e-days">0</b><span id="e-unit">días</span></div>
+        </div>
+        <p class="note">Los vatios son valores típicos de referencia. Comprueba la etiqueta de tus aparatos. El frigorífico se calcula como promedio de funcionamiento, no como consumo continuo.</p>
+      </div>
+
+      <!-- Test -->
+      <div class="panel" role="tabpanel" id="p-test" aria-labelledby="t-test" hidden>
+        <h3>¿Qué tan preparado estás?</h3>
+        <p class="intro">Diez preguntas, sin registro. Responde con sinceridad.</p>
+        <div id="quiz"></div>
+        <div class="score" aria-live="polite">
+          <b id="q-score">0/10</b>
+          <span id="q-level" class="mono">Responde para ver tu nivel</span>
+        </div>
+        <ul class="plain" id="q-tips"></ul>
+      </div>
+
+      <!-- Caducidades -->
+      <div class="panel" role="tabpanel" id="p-cad" aria-labelledby="t-cad" hidden>
+        <h3>Control de caducidades</h3>
+        <p class="intro">Anota lo que caduca en tu kit y tu despensa. Se guarda solo en este navegador.</p>
+        <form class="add-row" id="exp-form">
+          <label class="f" for="x-name">Producto<input type="text" id="x-name" placeholder="Ej. pastillas potabilizadoras" required></label>
+          <label class="f" for="x-date">Caduca<input type="date" id="x-date" required></label>
+          <button class="btn" type="submit">Añadir</button>
+        </form>
+        <div id="exp-list"></div>
+        <p class="note" id="exp-note"></p>
+      </div>
+
+      <!-- Qué hago ahora -->
+      <div class="panel" role="tabpanel" id="p-ahora" aria-labelledby="t-ahora" hidden>
+        <h3>Qué hago ahora</h3>
+        <p class="intro">Elige la situación y sigue los pasos en orden.</p>
+        <div class="alerts" id="alert-btns"></div>
+        <h3 id="alert-title" style="font-size:1.6rem"></h3>
+        <ol class="steps" id="alert-steps"></ol>
+        <div class="call"><b>Peligro para la vida:</b> llama al 112. Atiende siempre las indicaciones de Protección Civil y los avisos ES-Alert de tu móvil, que prevalecen sobre cualquier guía.</div>
+      </div>
+    </section>
+
+    <section class="block" id="recomendaciones" style="margin-top:56px">
+      <div class="sec-head">
+        <p class="mono">Recomendaciones</p>
+        <h2>Lo que miro antes de recomendar</h2>
+        <p>Aquí irán las selecciones de equipo con comparativas. Primero, los criterios que usaré para elegir.</p>
+      </div>
+      <div class="disclosure"><b>Transparencia.</b> Cuando una recomendación lleve un enlace de afiliado, se indicará de forma visible junto a ella. Si compras desde ese enlace puedo recibir una comisión, sin coste extra para ti. Nunca recomendaré algo que no usaría yo.</div>
+      <div class="cards">
+        <article class="card"><h3>Linternas y frontales</h3><ul><li>Lúmenes reales y autonomía en modo bajo</li><li>Pilas estándar o batería recargable</li><li>Resistencia al agua</li></ul><span class="tag">Selección en preparación</span></article>
+        <article class="card"><h3>Filtros de agua</h3><ul><li>Qué retiene: bacterias, protozoos, virus</li><li>Litros de vida útil</li><li>Facilidad de limpieza</li></ul><span class="tag">Selección en preparación</span></article>
+        <article class="card"><h3>Radios y walkies</h3><ul><li>Banda FM y AM, alimentación a pilas o manivela</li><li>Alcance real en ciudad</li><li>Cargador y pilas comunes</li></ul><span class="tag">Selección en preparación</span></article>
+        <article class="card"><h3>Baterías y paneles</h3><ul><li>Capacidad en Wh, no en mAh</li><li>Potencia de salida y puertos</li><li>Peso y recarga solar</li></ul><span class="tag">Selección en preparación</span></article>
+        <article class="card"><h3>Botiquines</h3><ul><li>Contenido útil frente a relleno</li><li>Organización y marcado</li><li>Caducidades de reposición</li></ul><span class="tag">Selección en preparación</span></article>
+        <article class="card"><h3>Mochilas y almacenaje</h3><ul><li>Costuras, cremalleras, impermeabilidad</li><li>Comodidad con carga</li><li>Cajas estancas para el coche</li></ul><span class="tag">Selección en preparación</span></article>
+      </div>
+    </section>
+
+    <section class="block" id="tienda" style="margin-top:56px">
+      <div class="sec-head">
+        <p class="mono">Tienda</p>
+        <h2>Kits montados y piezas recuperadas</h2>
+        <p>La tienda propia abrirá con pocos productos. Esto es lo previsto. Los precios y la disponibilidad se confirmarán al abrir.</p>
+      </div>
+      <div class="sub"><h3>Kits</h3><span class="tag example">Ejemplos del catálogo previsto</span></div>
+      <div class="cards">
+        <article class="card"><div class="row"><h3>Kit apagón</h3><span class="tag">Próximamente</span></div><ul><li>Linterna frontal y farol LED</li><li>Radio a pilas y pilas de repuesto</li><li>Batería externa y cables</li><li>Tarjeta con pasos a seguir</li></ul></article>
+        <article class="card"><div class="row"><h3>Mochila 72 h</h3><span class="tag">Próximamente</span></div><ul><li>Mochila, agua y filtro</li><li>Botiquín básico y manta térmica</li><li>Linterna, silbato y radio</li><li>Funda estanca para documentos</li></ul></article>
+        <article class="card"><div class="row"><h3>Kit de coche o furgo</h3><span class="tag">Próximamente</span></div><ul><li>Chaleco y triángulos</li><li>Manta, agua y linterna</li><li>Cables de arranque y cargador</li><li>Botiquín y extintor pequeño</li></ul></article>
+      </div>
+      <div class="sub"><h3>Equipo recuperado</h3><span class="tag example">Fichas de ejemplo</span></div>
+      <div class="cards">
+        <article class="card"><div class="row"><h3>Linterna recargable</h3><span class="tag">Reparada</span></div><p style="color:var(--muted);font-size:.92rem">Se limpia, se cambia la batería, se prueba y se mide su autonomía antes de ficharla.</p></article>
+        <article class="card"><div class="row"><h3>Batería externa</h3><span class="tag">Probada</span></div><p style="color:var(--muted);font-size:.92rem">Capacidad medida en Wh, con foto de la prueba y estado de las celdas.</p></article>
+        <article class="card"><div class="row"><h3>Herramienta de mano</h3><span class="tag">Revisada</span></div><p style="color:var(--muted);font-size:.92rem">Afilada, engrasada y con su historia: dónde apareció y qué trabajo tuvo.</p></article>
+      </div>
+      <p class="note">Aviso de venta: en la tienda solo habrá material de uso legal y envío libre. Los artículos con restricciones (como cuchillos grandes o pirotecnia) quedan fuera.</p>
+    </section>
+
+    <section class="block" id="proyecto" style="margin-top:56px">
+      <div class="two">
+        <div>
+          <p class="mono">Proyecto</p>
+          <h2>Por qué existe Delta Bravo</h2>
+          <p>Los apagones, las inundaciones y los temporales ya no son algo lejano. Tener lo básico preparado cuesta poco y evita decisiones precipitadas.</p>
+          <p>Delta Bravo reúne guías que se pueden aplicar, herramientas que no piden tus datos y equipo elegido con criterio. Todo con la disciplina de quien prefiere comprobar antes de recomendar.</p>
+        </div>
+        <div>
+          <p class="mono">Reutilizar antes que tirar</p>
+          <h3>Equipo recuperado</h3>
+          <p>Parte del material que verás aquí proviene de la recuperación de equipo: linternas, baterías, herramientas y accesorios que se limpian, reparan y prueban. Reutilizar también es autosuficiencia.</p>
+          <p>Cada pieza se ficha con su estado, sus pruebas y su historia.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p><b>Aviso importante.</b> Esta web ofrece consejos generales de preparación. No sustituye a Protección Civil, a los servicios de emergencia ni a un profesional sanitario. Ante una emergencia, llama al 112.</p>
+    <p>Las herramientas dan resultados orientativos. Las guías se revisan periódicamente y llevan fecha de revisión.</p>
+    <p class="mono">Delta Bravo · Oct 2026</p>
+  </footer>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  function store(key, value) {
+    try {
+      if (value === undefined) { var v = localStorage.getItem(key); return v ? JSON.parse(v) : null; }
+      localStorage.setItem(key, JSON.stringify(value));
+    } catch (e) { return null; }
+    return null;
+  }
+  function $(id) { return document.getElementById(id); }
+  function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
+  var nf = new Intl.NumberFormat("es-ES", { maximumFractionDigits: 1 });
+  function num(id, min, max, fallback) {
+    var v = parseFloat($(id).value);
+    if (isNaN(v)) v = fallback;
+    return Math.min(max, Math.max(min, v));
+  }
+
+  /* Pestañas */
+  var tabs = Array.prototype.slice.call(document.querySelectorAll('[role="tab"]'));
+  function selectTab(tab) {
+    tabs.forEach(function (t) {
+      var on = t === tab;
+      t.setAttribute("aria-selected", on ? "true" : "false");
+      $(t.getAttribute("aria-controls")).hidden = !on;
+    });
+  }
+  tabs.forEach(function (t, i) {
+    t.addEventListener("click", function () { selectTab(t); });
+    t.addEventListener("keydown", function (e) {
+      var k = e.key, n = tabs.length;
+      if (k === "ArrowRight") { tabs[(i + 1) % n].focus(); selectTab(tabs[(i + 1) % n]); e.preventDefault(); }
+      if (k === "ArrowLeft") { tabs[(i + n - 1) % n].focus(); selectTab(tabs[(i + n - 1) % n]); e.preventDefault(); }
+    });
+  });
+
+  /* Agua y comida */
+  function calcWater() {
+    var p = num("w-people", 1, 20, 1), d = num("w-days", 1, 30, 3), pets = num("w-pets", 0, 10, 0);
+    var perDay = parseFloat($("w-climate").value);
+    var liters = d * (p * perDay + pets * 1);
+    var kcal = p * 2000 * d;
+    $("w-liters").textContent = nf.format(liters);
+    $("w-jugs").textContent = Math.ceil(liters / 8);
+    $("w-kcal").textContent = kcal.toLocaleString("es-ES");
+    $("w-rations").textContent = Math.ceil(kcal / 500);
+  }
+  ["w-people", "w-days", "w-pets", "w-climate"].forEach(function (id) { $(id).addEventListener("input", calcWater); });
+  calcWater();
+
+  /* Mochila */
+  var PACK = [
+    { g: "Agua y comida", items: ["Agua, 1,5 L por persona como mínimo", "Barritas energéticas o frutos secos", "Comida que no necesite cocinar", "Filtro o pastillas potabilizadoras", "Abrelatas y cubiertos"] },
+    { g: "Luz y energía", items: ["Linterna frontal", "Pilas de repuesto", "Batería externa cargada y cable", "Radio a pilas o de manivela", "Silbato"] },
+    { g: "Salud e higiene", items: ["Botiquín básico", "Mascarillas", "Toallitas y papel higiénico", "Gel hidroalcohólico", "Bolsas de basura"] },
+    { g: "Documentos y dinero", items: ["Copias de DNI y seguros en funda estanca", "Efectivo en billetes pequeños", "USB con copias cifradas", "Lista de teléfonos en papel"] },
+    { g: "Abrigo y refugio", items: ["Manta térmica", "Chubasquero", "Muda y calcetines secos", "Navaja multiusos de uso legal"] },
+    { g: "Bebé", flag: "baby", items: ["Pañales y toallitas", "Leche o papillas para 3 días", "Biberón y agua para prepararlo", "Muda extra y manta"] },
+    { g: "Niños", flag: "kids", items: ["Ropa de abrigo de su talla", "Juego o libro pequeño", "Tarjeta con sus datos y contactos"] },
+    { g: "Mascota", flag: "pet", items: ["Comida y agua para 3 días", "Correa o transportín", "Cartilla y fotos recientes"] },
+    { g: "Medicación", flag: "meds", items: ["Medicación para 7 días", "Copia de la receta", "Lista de dosis y horarios"] },
+    { g: "Vehículo", flag: "car", items: ["Chaleco reflectante y triángulos", "Cables de arranque", "Cargador de coche", "Agua y manta en el maletero"] }
+  ];
+  var packState = store("db-pack") || { flags: {}, done: {} };
+  function renderPack() {
+    var html = "", total = 0, done = 0;
+    PACK.forEach(function (grp) {
+      if (grp.flag && !packState.flags[grp.flag]) return;
+      html += "<div><h4>" + esc(grp.g) + "</h4>";
+      grp.items.forEach(function (it) {
+        var key = grp.g + "|" + it, on = !!packState.done[key];
+        total++; if (on) done++;
+        html += '<label class="chk"><input type="checkbox" data-key="' + esc(key) + '"' + (on ? " checked" : "") + "><span>" + esc(it) + "</span></label>";
+      });
+      html += "</div>";
+    });
+    $("pack-list").innerHTML = html;
+    $("pack-count").textContent = done + " de " + total + " listo";
+    $("pack-bar").style.width = total ? (done / total * 100) + "%" : "0";
+  }
+  Array.prototype.forEach.call(document.querySelectorAll("#pack-flags input"), function (cb) {
+    cb.checked = !!packState.flags[cb.dataset.flag];
+    cb.addEventListener("change", function () { packState.flags[cb.dataset.flag] = cb.checked; store("db-pack", packState); renderPack(); });
+  });
+  $("pack-list").addEventListener("change", function (e) {
+    var k = e.target.dataset.key; if (!k) return;
+    packState.done[k] = e.target.checked; store("db-pack", packState); renderPack();
+  });
+  renderPack();
+
+  /* Energía */
+  var DEVICES = [
+    { n: "Móvil (carga)", w: 10, q: 2, h: 2 },
+    { n: "Router", w: 10, q: 1, h: 24 },
+    { n: "Luz LED", w: 8, q: 3, h: 5 },
+    { n: "Radio", w: 2, q: 1, h: 4 },
+    { n: "Portátil", w: 50, q: 1, h: 4 },
+    { n: "Frigorífico (promedio)", w: 100, q: 1, h: 8 },
+    { n: "Ventilador", w: 40, q: 1, h: 6 }
+  ];
+  var eb = $("e-body");
+  DEVICES.forEach(function (d, i) {
+    var tr = document.createElement("tr");
+    tr.innerHTML = "<td>" + esc(d.n) + '</td><td><input type="number" min="0" value="' + d.w + '" data-i="' + i + '" data-f="w" aria-label="Vatios de ' + esc(d.n) + '"></td><td><input type="number" min="0" value="0" data-i="' + i + '" data-f="q" aria-label="Unidades de ' + esc(d.n) + '"></td><td><input type="number" min="0" max="24" value="' + d.h + '" data-i="' + i + '" data-f="h" aria-label="Horas al día de ' + esc(d.n) + '"></td><td class="mono" id="e-wh-' + i + '">0</td>';
+    eb.appendChild(tr);
+  });
+  // unidades iniciales de ejemplo
+  var initQ = [2, 1, 3, 1, 0, 0, 0];
+  Array.prototype.forEach.call(eb.querySelectorAll('input[data-f="q"]'), function (el) { el.value = initQ[+el.dataset.i]; });
+  function calcEnergy() {
+    var rows = {};
+    Array.prototype.forEach.call(eb.querySelectorAll("input"), function (el) {
+      var i = el.dataset.i; rows[i] = rows[i] || {};
+      rows[i][el.dataset.f] = Math.max(0, parseFloat(el.value) || 0);
+    });
+    var demand = 0;
+    Object.keys(rows).forEach(function (i) {
+      var r = rows[i], wh = r.w * r.q * r.h;
+      demand += wh;
+      $("e-wh-" + i).textContent = Math.round(wh);
+    });
+    var batt = Math.max(0, parseFloat($("e-batt").value) || 0);
+    var solar = Math.max(0, parseFloat($("e-solar").value) || 0);
+    var usable = batt * 0.85;
+    var net = demand - solar;
+    $("e-demand").textContent = Math.round(demand).toLocaleString("es-ES");
+    $("e-usable").textContent = Math.round(usable).toLocaleString("es-ES");
+    if (demand === 0) { $("e-days").textContent = "—"; $("e-unit").textContent = "añade aparatos"; }
+    else if (net <= 0) { $("e-days").textContent = "∞"; $("e-unit").textContent = "el sol cubre el consumo"; }
+    else {
+      var days = usable / net;
+      if (days < 1) { $("e-days").textContent = nf.format(days * 24); $("e-unit").textContent = "horas"; }
+      else { $("e-days").textContent = nf.format(days); $("e-unit").textContent = "días"; }
+    }
+  }
+  eb.addEventListener("input", calcEnergy);
+  $("e-batt").addEventListener("input", calcEnergy);
+  $("e-solar").addEventListener("input", calcEnergy);
+  calcEnergy();
+
+  /* Test */
+  var QUIZ = [
+    ["Tengo una linterna con pilas o batería cargadas a mano", "Deja una linterna en un cajón fijo y comprueba su carga cada trimestre."],
+    ["Tengo una radio que funciona sin internet ni red eléctrica", "Una radio a pilas con FM te mantiene informado cuando falla la red."],
+    ["Tengo agua guardada para al menos 3 días", "Calcula tu necesidad en la calculadora y empieza por una garrafa por persona."],
+    ["Tengo comida que no necesita cocinar para 3 días", "Compra conservas y frutos secos de más y rota la despensa."],
+    ["Tengo un botiquín completo y sin caducar", "Revisa el botiquín y apunta sus caducidades en el control de esta web."],
+    ["Tengo copias de mis documentos fuera de casa o en una funda estanca", "Haz copias en papel y una copia cifrada en USB."],
+    ["Tengo una batería externa cargada", "Mantén una batería externa cargada al 50 % o más."],
+    ["Mi familia tiene un punto de encuentro acordado", "Acordad un punto de encuentro y un contacto fuera de la zona."],
+    ["Sé dónde cerrar el agua, la luz y el gas de mi vivienda", "Localiza hoy las llaves de paso y el cuadro eléctrico."],
+    ["Sé qué hacer en una DANA, un apagón o un incendio", "Lee el apartado Qué hago ahora y repasadlo en casa."]
+  ];
+  var quizAns = store("db-quiz") || {};
+  var qEl = $("quiz");
+  QUIZ.forEach(function (q, i) {
+    var d = document.createElement("div");
+    d.className = "quiz-q";
+    d.innerHTML = "<span>" + esc(q[0]) + '</span><div class="yn" role="group" aria-label="Respuesta"><button type="button" data-i="' + i + '" data-v="1" aria-pressed="false">Sí</button><button type="button" data-i="' + i + '" data-v="0" aria-pressed="false">No</button></div>';
+    qEl.appendChild(d);
+  });
+  function renderQuiz() {
+    var score = 0, answered = 0, tips = [];
+    Array.prototype.forEach.call(qEl.querySelectorAll("button"), function (b) {
+      var a = quizAns[b.dataset.i];
+      b.setAttribute("aria-pressed", a !== undefined && String(a) === b.dataset.v ? "true" : "false");
+    });
+    QUIZ.forEach(function (q, i) {
+      var a = quizAns[i];
+      if (a !== undefined) { answered++; if (a === 1) score++; else if (tips.length < 3) tips.push(q[1]); }
+    });
+    $("q-score").textContent = score + "/10";
+    var lvl = "Responde para ver tu nivel";
+    if (answered === QUIZ.length) lvl = score >= 8 ? "Nivel operativo" : score >= 4 ? "Nivel en marcha" : "Nivel inicial";
+    else if (answered > 0) lvl = answered + " de 10 respondidas";
+    $("q-level").textContent = lvl;
+    $("q-tips").innerHTML = tips.map(function (t) { return "<li>" + esc(t) + "</li>"; }).join("");
+  }
+  qEl.addEventListener("click", function (e) {
+    var b = e.target.closest("button"); if (!b) return;
+    quizAns[b.dataset.i] = parseInt(b.dataset.v, 10);
+    store("db-quiz", quizAns); renderQuiz();
+  });
+  renderQuiz();
+
+  /* Caducidades */
+  function iso(offsetDays) {
+    var d = new Date(); d.setDate(d.getDate() + offsetDays);
+    var m = String(d.getMonth() + 1).padStart(2, "0"), day = String(d.getDate()).padStart(2, "0");
+    return d.getFullYear() + "-" + m + "-" + day;
+  }
+  var exp = store("db-exp");
+  var isExample = false;
+  if (!exp) {
+    isExample = true;
+    exp = [
+      { n: "Pastillas potabilizadoras", d: iso(25), ex: true },
+      { n: "Gasas estériles", d: iso(80), ex: true },
+      { n: "Barritas energéticas", d: iso(300), ex: true },
+      { n: "Agua de la garrafa 1", d: iso(-5), ex: true }
+    ];
+  }
+  function daysTo(dateStr) {
+    var p = dateStr.split("-");
+    var target = new Date(+p[0], +p[1] - 1, +p[2]);
+    var now = new Date(); now = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    return Math.round((target - now) / 86400000);
+  }
+  function renderExp() {
+    var list = exp.slice().sort(function (a, b) { return a.d < b.d ? -1 : 1; });
+    var html = "";
+    list.forEach(function (it) {
+      var n = daysTo(it.d), cls = "ok", txt = "en " + n + " días";
+      if (n < 0) { cls = "bad"; txt = "caducado"; }
+      else if (n <= 30) { cls = "warn"; txt = "caduca en " + n + " d"; }
+      else if (n <= 90) { cls = "warn"; txt = "en " + n + " días"; }
+      var idx = exp.indexOf(it);
+      html += '<div class="exp-row"><span>' + esc(it.n) + (it.ex ? ' <span class="tag example">Ejemplo</span>' : "") + '<br><span class="mono">' + esc(it.d.split("-").reverse().join("/")) + '</span></span><span class="badge ' + cls + '">' + txt + '</span><button class="link-btn" type="button" data-rm="' + idx + '" aria-label="Quitar ' + esc(it.n) + '">Quitar</button></div>';
+    });
+    $("exp-list").innerHTML = html || '<p class="note">Aún no has añadido nada. Escribe un producto y su fecha de caducidad.</p>';
+    $("exp-note").textContent = exp.some(function (e) { return e.ex; }) ? "Las filas de ejemplo se quitan al añadir tus propios productos o con Quitar." : "";
+  }
+  $("exp-form").addEventListener("submit", function (e) {
+    e.preventDefault();
+    var n = $("x-name").value.trim(), d = $("x-date").value;
+    if (!n || !d) return;
+    exp = exp.filter(function (x) { return !x.ex; });
+    exp.push({ n: n, d: d });
+    store("db-exp", exp);
+    $("x-name").value = ""; $("x-date").value = "";
+    renderExp();
+  });
+  $("exp-list").addEventListener("click", function (e) {
+    var b = e.target.closest("[data-rm]"); if (!b) return;
+    exp.splice(parseInt(b.dataset.rm, 10), 1);
+    store("db-exp", exp);
+    renderExp();
+  });
+  renderExp();
+
+  /* Qué hago ahora */
+  var ALERTS = {
+    apagon: { t: "Apagón eléctrico", s: [
+      "Comprueba si el corte es solo en tu vivienda: mira el cuadro eléctrico y a tus vecinos.",
+      "Usa linternas, no velas. Desconecta los aparatos sensibles para evitar picos al volver la luz.",
+      "Mantén cerrados el frigorífico y el congelador para conservar el frío.",
+      "Enciende la radio a pilas y sigue los avisos oficiales.",
+      "No uses generadores, hornillos ni barbacoas dentro de casa: producen monóxido de carbono.",
+      "Ahorra batería del móvil y usa llamadas cortas. Reserva el 112 para emergencias.",
+      "Ayuda a vecinos mayores o con equipos médicos eléctricos."] },
+    dana: { t: "DANA o inundación", s: [
+      "Atiende el aviso ES-Alert y las indicaciones de Protección Civil.",
+      "No te desplaces si no es imprescindible. No cruces cauces, barrancos, pasos inundados ni túneles.",
+      "Sube a una planta alta o a un lugar elevado. No te refugies en sótanos ni garajes.",
+      "Si vas en coche y el agua sube, abandónalo hacia zona alta solo si puedes hacerlo con seguridad.",
+      "Corta la electricidad si el agua entra en casa y no toques aparatos mojados.",
+      "Coge la mochila, los documentos y la medicación si hay que evacuar.",
+      "Llama al 112 si hay riesgo para la vida."] },
+    incendio: { t: "Incendio forestal cercano", s: [
+      "Sigue las órdenes de las autoridades. Si piden evacuar, hazlo sin esperar.",
+      "Si piden confinarte, cierra puertas y ventanas, baja persianas y aparta lo inflamable de las ventanas.",
+      "Humedece paños para sellar rendijas y mantén la mochila y los documentos junto a la puerta.",
+      "Evacúa con el depósito del coche lleno, las luces encendidas y las ventanillas cerradas.",
+      "No bloquees caminos de acceso para los servicios de emergencia.",
+      "Evita zonas de humo denso. Llama al 112 si ves fuego nuevo."] },
+    calor: { t: "Ola de calor", s: [
+      "Bebe agua con frecuencia aunque no tengas sed.",
+      "Evita salir y hacer esfuerzo en las horas centrales del día.",
+      "Baja persianas de día y ventila por la noche.",
+      "Nunca dejes personas ni animales dentro de un coche aparcado.",
+      "Vigila a niños, mayores y personas con enfermedades crónicas.",
+      "Si hay mareo, confusión, piel muy caliente o desmayo, llama al 112."] },
+    viento: { t: "Temporal de viento", s: [
+      "Entra o sujeta macetas, toldos y objetos sueltos de balcones y terrazas.",
+      "Aléjate de árboles, andamios, cables caídos y cornisas.",
+      "Si no es imprescindible, no conduzcas, sobre todo con vehículos altos o remolque.",
+      "Cierra ventanas y persianas y mantén cargados linterna, radio y móvil.",
+      "No toques cables caídos y avisa al 112."] }
+  };
+  var abtn = $("alert-btns");
+  Object.keys(ALERTS).forEach(function (k, i) {
+    var b = document.createElement("button");
+    b.type = "button"; b.dataset.k = k; b.textContent = ALERTS[k].t;
+    b.setAttribute("aria-pressed", i === 0 ? "true" : "false");
+    abtn.appendChild(b);
+  });
+  function showAlert(k) {
+    Array.prototype.forEach.call(abtn.querySelectorAll("button"), function (b) { b.setAttribute("aria-pressed", b.dataset.k === k ? "true" : "false"); });
+    $("alert-title").textContent = ALERTS[k].t;
+    $("alert-steps").innerHTML = ALERTS[k].s.map(function (s) { return "<li>" + esc(s) + "</li>"; }).join("");
+  }
+  abtn.addEventListener("click", function (e) { var b = e.target.closest("button"); if (b) showAlert(b.dataset.k); });
+  showAlert("apagon");
+})();
+</script>
+
+</body></html>
